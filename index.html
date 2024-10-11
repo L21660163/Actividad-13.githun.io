@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertidor de Unidades</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fbeeee;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/45-degree-fabric-light.png'); /* Fondo abstracto */
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff5f5;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ffc1c1;
+            position: relative;
+            z-index: 1;
+        }
+        h2 {
+            text-align: center;
+            color: #d65b5b;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        label {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            display: block;
+            color: #993939;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ffa3a3;
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: #ffe3e3;
+            color: #333;
+        }
+        input:focus, select:focus {
+            border-color: #ff8585;
+            outline: none;
+        }
+        .result {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ff8585;
+            border-radius: 5px;
+            background-color: #ffe3e3;
+            color: #993939;
+        }
+        /* Estilos para los botones */
+        button {
+            background-color: #d65b5b;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1em;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #cc4949;
+        }
+
+        /* Fondo con figuras abstractas de diferentes colores */
+        body::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            right: -50px;
+            bottom: -50px;
+            background: rgba(255, 165, 165, 0.3); /* Rojo pastel */
+            z-index: 0;
+            opacity: 0.7;
+            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+        }
+        body::after {
+            content: "";
+            position: absolute;
+            top: 80px;
+            left: 80px;
+            right: -80px;
+            bottom: -80px;
+            background: rgba(173, 216, 230, 0.4); /* Azul pastel */
+            z-index: 0;
+            opacity: 0.6;
+            clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%);
+        }
+        body::before::after {
+            content: "";
+            position: absolute;
+            top: 100px;
+            left: 50px;
+            right: -100px;
+            bottom: -100px;
+            background: rgba(144, 238, 144, 0.4); /* Verde pastel */
+            z-index: 0;
+            opacity: 0.5;
+            clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+        }
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 50px;
+            left: -50px;
+            width: 100%;
+            height: 300px;
+            background: rgba(255, 193, 37, 0.4); /* Naranja pastel */
+            z-index: -1;
+            opacity: 0.6;
+            clip-path: circle(40% at 30% 30%);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2><i class="fas fa-exchange-alt"></i> Convertidor de Unidades</h2>
+    
+    <label for="inputValue"><i class="fas fa-ruler"></i> Valor a convertir:</label>
+    <input type="number" id="inputValue" placeholder="Ingrese un valor" oninput="convertirUnidades()">
+
+    <label for="inputUnit"><i class="fas fa-sort-amount-down"></i> Unidad de entrada:</label>
+    <select id="inputUnit" onchange="convertirUnidades()">
+        <option value="metros">Metros</option>
+        <option value="kilometros">Kilómetros</option>
+        <option value="millas">Millas</option>
+    </select>
+
+    <label for="outputUnit"><i class="fas fa-sort-amount-up-alt"></i> Convertir a:</label>
+    <select id="outputUnit" onchange="convertirUnidades()">
+        <option value="metros">Metros</option>
+        <option value="kilometros">Kilómetros</option>
+        <option value="millas">Millas</option>
+    </select>
+
+    <div class="result" id="result"><i class="fas fa-calculator"></i> Resultado: --</div>
+</div>
+
+<script>
+    // Función para convertir las unidades
+    function convertirUnidades() {
+        const inputValue = parseFloat(document.getElementById('inputValue').value);
+        const inputUnit = document.getElementById('inputUnit').value;
+        const outputUnit = document.getElementById('outputUnit').value;
+        const resultDisplay = document.getElementById('result');
+
+        if (isNaN(inputValue)) {
+            resultDisplay.innerHTML = "<i class='fas fa-calculator'></i> Resultado: --";
+            return;
+        }
+
+        // Conversiones básicas (factores de conversión)
+        const conversiones = {
+            metros: {
+                kilometros: inputValue / 1000,
+                millas: inputValue / 1609.34,
+                metros: inputValue // Sin cambio
+            },
+            kilometros: {
+                metros: inputValue * 1000,
+                millas: inputValue / 1.60934,
+                kilometros: inputValue // Sin cambio
+            },
+            millas: {
+                metros: inputValue * 1609.34,
+                kilometros: inputValue * 1.60934,
+                millas: inputValue // Sin cambio
+            }
+        };
+
+        // Realizar la conversión
+        const resultado = conversiones[inputUnit][outputUnit];
+        resultDisplay.innerHTML = `<i class="fas fa-calculator"></i> Resultado: ${resultado.toFixed(4)} ${outputUnit}`;
+    }
+</script>
+
+</body>
+</html>
